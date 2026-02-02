@@ -3,12 +3,11 @@
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import type { NoteTag } from "../../types/note";
-import { noteTags } from "../../types/note";
-import { createNote } from "../../lib/api";
-import type { CreateNotePayload } from "../../lib/api";
-import { useNoteStore } from "../../lib/store/noteStore";
-import type { Draft } from "../../lib/store/noteStore";
+import type { NoteTag } from "@/types/note";
+import { noteTags } from "@/types/note";
+import { createNote, CreateNotePayload } from "@/lib/api/clientApi";
+import { useNoteStore } from "@/lib/store/noteStore";
+import type { Draft } from "@/lib/store/noteStore";
 import css from "./NoteForm.module.css";
 
 export interface NoteFormProps {
