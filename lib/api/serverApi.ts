@@ -56,9 +56,13 @@ export const getMe = async (): Promise<User> => {
   return response.data;
 };
 
-export const checkSession = async (): Promise<AxiosResponse<{ success: boolean }>> => {
+export const checkSession = async (): Promise<
+  AxiosResponse<{ success: boolean }>
+> => {
   const headers = await getHeaders();
-  const response = await api.get<{ success: boolean }>("/auth/session", { headers });
+  const response = await api.get<{ success: boolean }>("/auth/session", {
+    headers,
+  });
 
   return response;
 };
