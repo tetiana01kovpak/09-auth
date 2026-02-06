@@ -1,8 +1,8 @@
 import type { Note, NoteTag } from "@/types/note";
 import type { User } from "@/types/user";
 import { cookies } from "next/headers";
-
-const baseURL = process.env.NEXT_PUBLIC_API_URL + "/api";
+import { api } from "./api";
+import { AxiosResponse } from "axios";
 
 interface FetchNotesParams {
   page?: number;
@@ -27,63 +27,47 @@ export const fetchNotes = async (
   params: FetchNotesParams
 ): Promise<FetchNotesResponse> => {
   const headers = await getHeaders();
-  const searchParams = new URLSearchParams();
 
-  if (params.page) searchParams.set("page", String(params.page));
-  if (params.perPage) searchParams.set("perPage", String(params.perPage));
-  if (params.search) searchParams.set("search", params.search);
-  if (params.tag && params.tag !== "All") searchParams.set("tag", params.tag);
+  const searchParams: Record<string, string> = {};
+  if (params.page) searchParams.page = String(params.page);
+  if (params.perPage) searchParams.perPage = String(params.perPage);
+  if (params.search) searchParams.search = params.search;
+  if (params.tag && params.tag !== "All") searchParams.tag = params.tag;
 
-  const response = await fetch(`${baseURL}/notes?${searchParams.toString()}`, {
+  const response = await api.get<FetchNotesResponse>("/notes", {
     headers,
-    cache: "no-store",
+    params: searchParams,
   });
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch notes");
-  }
-
-  return response.json();
+  return response.data;
 };
 
 export const fetchNoteById = async (id: string): Promise<Note> => {
   const headers = await getHeaders();
-  const response = await fetch(`${baseURL}/notes/${id}`, {
+
+  const response = await api.get<Note>(`/notes/${id}`, {
     headers,
-    cache: "no-store",
   });
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch note");
-  }
-
-  return response.json();
+  return response.data;
 };
 
 export const getMe = async (): Promise<User> => {
   const headers = await getHeaders();
-  const response = await fetch(`${baseURL}/users/me`, {
+
+  const response = await api.get<User>("/users/me", {
     headers,
-    cache: "no-store",
   });
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch user");
-  }
-
-  return response.json();
+  return response.data;
 };
 
-export const checkSession = async (): Promise<{ success: boolean }> => {
+export const checkSession = async (): Promise<AxiosResponse> => {
   const headers = await getHeaders();
-  const response = await fetch(`${baseURL}/auth/session`, {
+
+  const response = await api.post("/auth/session", null, {
     headers,
-    cache: "no-store",
   });
 
-  if (!response.ok) {
-    return { success: false };
-  }
-
-  return response.json();
+  return response;
 };

@@ -37,7 +37,7 @@ export default async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/sign-in", request.url));
   }
 
-  const isAuthenticated = !!accessToken || !!refreshToken;
+  const isAuthenticated = !!accessToken;
 
   if (isPrivateRoute && !isAuthenticated) {
     return NextResponse.redirect(new URL("/sign-in", request.url));
